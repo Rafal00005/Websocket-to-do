@@ -27,23 +27,17 @@ const App = () => {
 		};
 	}, []);
 
-	const addTask = (task) => {
-		setTasks((tasks) => [...tasks, task]);
-	};
-
-	const removeTask = (id, emit = true) => {
+	const removeTask = (id) => {
 		setTasks((tasks) => tasks.filter((task) => task.id !== id));
-		if (emit) {
-			socket.emit('removeTask', id);
-		}
+		socket.emit('removeTask', id);
 	};
 
 	const submitForm = (e) => {
 		e.preventDefault();
 		if (!taskName.length) return;
-		const task = { id: Date.now(), name: taskName };
-		addTask(task);
-		socket.emit('addTask', task);
+
+		// send task to server - server generates the ID
+		socket.emit('addTask', { name: taskName });
 		setTaskName('');
 	};
 
